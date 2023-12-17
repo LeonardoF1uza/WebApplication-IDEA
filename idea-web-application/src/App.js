@@ -148,7 +148,7 @@ function App() {
   };
 
   const optionsLine = {
-    curveType: "function",
+    //curveType: "function",
     is3D: false,
     textColor: "#fff",
     backgroundColor: "transparent",
@@ -201,7 +201,7 @@ function App() {
   };
 
   const optionsLine2 = {
-    curveType: "function",
+    //curveType: "function",
     is3D: false,
     textColor: "fff",
     backgroundColor: "transparent",
@@ -325,20 +325,31 @@ function App() {
       }
 
       for (let cont = 0; cont < sensorData.length; cont++) {
+        console.log("--------------------------")
+        console.log("--------------------------")
+
 
         if (days.includes(formatDate2(sensorData[cont].id))) {
-          const { id, ...dataWithoutId } = sensorData[cont];
+          let { id, ...dataWithoutId } = sensorData[cont];
+          id = formatDate2(id)
           for (let c in dataWithoutId) {
+        console.log("_________________________")
+
+       
+        console.log("_________________________")
+
+        
+
             if (c.endsWith("Exits")) {
-              newDataSensor["Exits"] = newDataSensor[c] + dataWithoutId[c];
+              newDataSensor[id]["Exits"] = newDataSensor[id]["Exits"] + dataWithoutId[c];
             } else if (c.endsWith("Enters")) {
-              newDataSensor["Enters"] = newDataSensor[c] + dataWithoutId[c];
+              newDataSensor[id]["Enters"] = newDataSensor[id]["Enters"] + dataWithoutId[c];
             }
           }
-          newDataSensor[formatDate2(sensorData[cont].id)] = dataWithoutId;
         }
       }
       setDataSensor(newDataSensor);
+
     };
 
       fetchData();
@@ -581,57 +592,61 @@ function App() {
 
   function LineChartSensorUdate() {
     let keys = Object.keys(dataSensor);
+    console.log(dataSensor)
+    console.log(keys)
+
+
 
     setDataSensorChart([
       ["---", "Semana passada", "Esta Semana"],
       [
         keys[0],
-        (dataSensor[keys[0]]?.["0_Enters"] || 0) +
-          (dataSensor[keys[0]]?.["0_Exits"] || 0),
-        (dataSensor[keys[0]]?.["0_Enters"] || 0) +
-          (dataSensor[keys[0]]?.["0_Exits"] || 0),
+        (dataSensor[keys[0]]?.["Enters"] || 0) +
+          (dataSensor[keys[0]]?.["Exits"] || 0),
+        (dataSensor[keys[0]]?.["Enters"] || 0) +
+          (dataSensor[keys[0]]?.["Exits"] || 0),
       ],
       [
         keys[1],
-        (dataSensor[keys[1]]?.["0_Enters"] || 0) +
-          (dataSensor[keys[1]]?.["0_Exits"] || 0),
-        (dataSensor[keys[1]]?.["0_Enters"] || 0) +
-          (dataSensor[keys[1]]?.["0_Exits"] || 0),
+        (dataSensor[keys[1]]?.["Enters"] || 0) +
+          (dataSensor[keys[1]]?.["Exits"] || 0),
+        (dataSensor[keys[1]]?.["Enters"] || 0) +
+          (dataSensor[keys[1]]?.["Exits"] || 0),
       ],
       [
         keys[2],
-        (dataSensor[keys[2]]?.["0_Enters"] || 0) +
-          (dataSensor[keys[2]]?.["0_Exits"] || 0),
-        (dataSensor[keys[2]]?.["0_Enters"] || 0) +
-          (dataSensor[keys[2]]?.["0_Exits"] || 0),
+        (dataSensor[keys[2]]?.["Enters"] || 0) +
+          (dataSensor[keys[2]]?.["Exits"] || 0),
+        (dataSensor[keys[2]]?.["Enters"] || 0) +
+          (dataSensor[keys[2]]?.["Exits"] || 0),
       ],
       [
         keys[3],
-        (dataSensor[keys[3]]?.["0_Enters"] || 0) +
-          (dataSensor[keys[3]]?.["0_Exits"] || 0),
-        (dataSensor[keys[3]]?.["0_Enters"] || 0) +
-          (dataSensor[keys[3]]?.["0_Exits"] || 0),
+        (dataSensor[keys[3]]?.["Enters"] || 0) +
+          (dataSensor[keys[3]]?.["Exits"] || 0),
+        (dataSensor[keys[3]]?.["Enters"] || 0) +
+          (dataSensor[keys[3]]?.["Exits"] || 0),
       ],
       [
         keys[4],
-        (dataSensor[keys[4]]?.["0_Enters"] || 0) +
-          (dataSensor[keys[4]]?.["0_Exits"] || 0),
-        (dataSensor[keys[4]]?.["0_Enters"] || 0) +
-          (dataSensor[keys[4]]?.["0_Exits"] || 0),
+        (dataSensor[keys[4]]?.["Enters"] || 0) +
+          (dataSensor[keys[4]]?.["Exits"] || 0),
+        (dataSensor[keys[4]]?.["Enters"] || 0) +
+          (dataSensor[keys[4]]?.["Exits"] || 0),
       ],
       [
         keys[5],
-        (dataSensor[keys[5]]?.["0_Enters"] || 0) +
-          (dataSensor[keys[5]]?.["0_Exits"] || 0),
-        (dataSensor[keys[5]]?.["0_Enters"] || 0) +
-          (dataSensor[keys[5]]?.["0_Exits"] || 0),
+        (dataSensor[keys[5]]?.["Enters"] || 0) +
+          (dataSensor[keys[5]]?.["Exits"] || 0),
+        (dataSensor[keys[5]]?.["Enters"] || 0) +
+          (dataSensor[keys[5]]?.["Exits"] || 0),
       ],
       [
         keys[6],
-        (dataSensor[keys[6]]?.["0_Enters"] || 0) +
-          (dataSensor[keys[6]]?.["0_Exits"] || 0),
-        (dataSensor[keys[6]]?.["0_Enters"] || 0) +
-          (dataSensor[keys[6]]?.["0_Exits"] || 0),
+        (dataSensor[keys[6]]?.["Enters"] || 0) +
+          (dataSensor[keys[6]]?.["Exits"] || 0),
+        (dataSensor[keys[6]]?.["Enters"] || 0) +
+          (dataSensor[keys[6]]?.["Exits"] || 0),
       ],
     ]);
   }
@@ -677,47 +692,6 @@ function App() {
     ]);
   }
 
-
-  function LineChartUdate0() {
-    setDataLine([
-      ["---", "Semana passada", "Esta Semana"],
-      [
-        sevenDaysTemp[0] + "\nvs\n" + sevenDaysBeforeTemp[0],
-        0,
-        0,
-      ],
-      [
-        sevenDaysTemp[1] + "\nvs\n" + sevenDaysBeforeTemp[1],
-        0,
-        0,
-      ],
-      [
-        sevenDaysTemp[2] + "\nvs\n" + sevenDaysBeforeTemp[2],
-        0,
-        0,
-      ],
-      [
-        sevenDaysTemp[3] + "\nvs\n" + sevenDaysBeforeTemp[3],
-        0,
-        0,
-      ],
-      [
-        sevenDaysTemp[4] + "\nvs\n" + sevenDaysBeforeTemp[4],
-        0,
-        0,
-      ],
-      [
-        sevenDaysTemp[5] + "\nvs\n" + sevenDaysBeforeTemp[5],
-        0,
-        0,
-      ],
-      [
-        sevenDaysTemp[6] + "\nvs\n" + sevenDaysBeforeTemp[6],
-        0,
-        0,
-      ],
-    ]);
-  }
   function verificarMessage(n) {
     if (n > 0) {
       setMsg1("Conseguimos melhorar!");
@@ -979,11 +953,6 @@ function App() {
                 <br />
                 <span>durante a semana atual e a semana anterior </span>
               </span>
-
-              {console.log("__________________")}
-              {console.log(dataLine)}
-
-              
 
               <Chart
                 chartType="LineChart"
