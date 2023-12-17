@@ -1,0 +1,42 @@
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overflow: hidden;
+}
+
+body, html {
+  margin: 0;
+  padding: 0;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+    monospace;
+}
+
+@font-face {
+  font-family: "K2D-Regular";   /*Can be any text*/
+  src: local("K2D-Regular"),
+    url("./assets/fonts/K2D-Regular.ttf") format("truetype");
+}
+
+@font-face {
+  font-family: "K2D-Medium";   /*Can be any text*/
+  src: local("K2D-Medium"),
+    url("./assets/fonts/K2D-Medium.ttf") format("truetype");
+}
+
+
+@font-face {
+  font-family: "K2D-Bold";   /*Can be any text*/
+  src: local("K2D-Bold"),
+    url("./assets/fonts/K2D-Bold.ttf") format("truetype");
+}

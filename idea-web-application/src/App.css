@@ -1,0 +1,217 @@
+.container {
+  display: flex;
+  justify-content: space-between;
+}
+
+.iconsTab {
+  display: flex;
+  flex-direction: 'row';
+  justify-content: space-evenly;
+  margin-bottom: 2vh;
+}
+
+.leftSection {
+  background-color: #000000;
+  height: 100vh;
+  width: 65vw;
+  padding: 5vh;
+  float: left;
+}
+
+.rightSection {
+  height: 100vh;
+  width: 35vw;
+  padding: 5vh;
+  float: right;
+  overflow: hidden;
+}
+
+.iconRight {
+  position: absolute;
+  bottom: -20vh;
+  right: -30vh;
+}
+
+.headingText {
+  color: #FFFFFF;
+  font-size: 3vh;
+  font-family: 'K2D-Regular';
+  text-align: center;
+  display: block;
+}
+
+.mainText {
+  color: #FFFFFF;
+  font-size: 17vh;
+  font-family: 'K2D-Bold';
+  text-align: center;
+  display: block;
+}
+
+.mainSymbol {
+  font-size: 72px!important;
+}
+
+.firstSectionRight {
+  height: 30vh;
+}
+
+.secondSectionRight {
+  height: 58vh;
+}
+
+.pointsLegend {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: baseline;
+}
+
+.subText {
+  color: #FFFFFF;
+  font-size: 2vh;
+  text-align: center;
+  display: block;
+  font-family: 'K2D-Regular';
+}
+
+.pointsText {
+  color: #FFFFFF;
+  font-size: 2.5vh;
+  text-align: center;
+  display: block;
+  font-family: 'K2D-Bold';
+  margin-right: 10px;
+}
+
+.legend {
+  color: #FFFFFF;
+  font-size: 1.6vh;
+  text-align: center;
+  display: block;
+  font-family: 'K2D-Regular';
+}
+.legend2 {
+  color: #FFFFFF;
+  font-size: 1.6vh;
+  text-align: center;
+  padding-top: 40px;
+
+  display: block;
+  font-family: 'K2D-Regular';
+}
+
+.window{
+  
+  display: flex;
+  width: 100%;
+  height: 75%;
+  margin-top: 8%;
+  background-color: transparent;
+  justify-content: space-around;
+  flex-direction: row;
+  align-items: space-between;
+}
+
+.graphics_left{
+  background-color:  #222;
+  border-radius: 20px;
+  width: 55%;
+  height: 100%;
+
+  padding: 40px 20px 40px 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+}
+.graphics_left2{
+  background-color:  'transparent';
+  height: 100%;
+  width: 40%;
+  display: flex;
+  border-radius: 20px;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+}
+  
+.graphics_left2_2{
+  background-color:  #222;
+  border-radius: 20px;
+  height: 90%;
+  margin-top: 5%;
+
+  width: 100%;
+  padding: 20px 40px 20px 40px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+}
+.graphics_left2_1{
+  background-color:  #222;
+  border-radius: 20px;
+  width: 100%;
+  margin-bottom: 2%;
+  padding: 40px 20px 40px 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+}
+.ranking{
+  border-radius: 10px;
+  width: 100%;
+  height: fit-content;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  padding: 1.5vh 2vh 1.5vh 2vh;
+  color: #FFFFFF;
+  font-family: 'K2D-Regular';
+  margin-bottom: 3%;
+  margin-top: 3%;
+  letter-spacing: 0.03cm;
+  justify-content: space-between;
+  align-items: center;
+
+  .rankingText{
+  font-size: 2vh;
+  }
+
+  FaMedal {
+    font-size: 2vh;
+  }
+  FaArrowUp, FaArrowDown, FaEquals, FaSeedling{
+
+  }
+  
+}
+
+.pieGraphic{
+  width: 100%;
+  margin-top: 10%;
+  height: 75%;
+}
+
+
+.bigDiv{
+  width: 100%;
+  height: 100%;
+}
+
+
+
+.graphics_right{
+  background-color:  #222;
+  border-radius: 20px;
+  padding: 0px 15px 15px 0px;
+  margin-left: -10px;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+}
