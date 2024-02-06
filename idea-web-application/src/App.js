@@ -26,6 +26,23 @@ import "./assets/fonts/K2D-Medium.ttf";
 import db from "./firebase";
 import { collection, getDocs} from "firebase/firestore";
 
+
+function sortValues(map) {
+  const result = {};
+  Object.keys(map).forEach((category) => {
+    const sortedEntries = Object.entries(map[category]).sort((a, b) => b[1] - a[1]);
+    result[category] = Object.fromEntries(sortedEntries);
+  });
+  return result;
+}
+function adjustMonths(dateArray) {
+  let result = [];
+  for (let c = 0; c < dateArray.length; c++) {
+    const elements = dateArray[c].split("/0");
+    result.push(elements.join("/"));
+  }
+      return result;
+}
 function getLastSevenDays() {
   const dates = [];
   const today = new Date();
@@ -34,7 +51,7 @@ function getLastSevenDays() {
     date.setDate(today.getDate() - i);
     dates.push(formatDate(date));
   }
-  return dates;
+  return adjustMonths(dates);
 }
 
 function getSevenDaysBefore() {
@@ -43,10 +60,12 @@ function getSevenDaysBefore() {
   for (let i = 13; i >= 7; i--) {
     const date = new Date(today);
     date.setDate(today.getDate() - i);
-    dates.push(formatDate(date));
+    dates.push(formatDate(date))
   }
-  return dates;
+  return adjustMonths(dates);
 }
+
+
 
 function formatDate(date) {
   const day = String(date.getDate());
@@ -64,7 +83,6 @@ function formatDate2(data) {
 
   const mF = new Date().getMonth() + 1;
   const aF = new Date().getUTCFullYear();
-
   return `${dF}/${mF}/${aF}`;
 }
 function totalRingPoints(p) {
@@ -112,7 +130,15 @@ function App() {
 
   const [dataLine, setDataLine] = useState([]);
 
-  const [dataRing, setDataRing] = useState([]);
+  const [dataRing, setDataRing] = useState([
+    ["catgories", "points"],
+    ["air",0],
+    ["energy",0],
+    ["movement",0],
+    ["recycle",0],
+    ["water",0],
+    ["nan",0.000000000000000001,],
+  ] );
   const [msg1, setMsg1] = useState("");
   const [msg2, setMsg2] = useState("");
 
@@ -283,6 +309,10 @@ function App() {
         color: area === "water" ? CONST.blue : CONST.mainGray,
         borderColor: "000",
       },
+      5: {
+        color: CONST.mainGray,
+        borderColor: "000",
+      },
     },
     pieSliceBorderColor: CONST.secondaryGray,
   };
@@ -378,7 +408,7 @@ function App() {
           setLoadArea(0);
         }
       }
-    }, [5000]);
+    }, [10000]);
 
     return () => clearInterval(interval);
   }, [loadPage, loadArea]);
@@ -386,9 +416,12 @@ function App() {
   useEffect(() => {
     LineChartSensorUdate();
   }, [dataSensor]);
+  
 
   useEffect(() => {
+    
     const fetchData = async () => {
+
       const departmentsSnapshot = await getDocs(collection(db, "departments"));
       const departmentsData = departmentsSnapshot.docs.map((doc) => doc.data());
 
@@ -404,10 +437,13 @@ function App() {
       let updatedSecondWeekPoints = secondWeekPoints;
       let updatedScorePerCategories = scorePerCategories;
 
+      
+
       for (let i = 0; i < departmentsData.length; i++) {
         if (orgID === departmentsData[i].organization) {
           let dep = departmentsData[i];
           for (let day of sevenDaysTemp) {
+
             let points_air = checkContains(day, dep.air_points);
             updatedFirstWeekPoints.air[day] =
               (updatedFirstWeekPoints.air[day] || 0) + points_air;
@@ -439,7 +475,13 @@ function App() {
               (updatedFirstWeekPoints.water[day] || 0) + points_water;
             updatedScorePerCategories.water[dep.name] =
               (updatedScorePerCategories.water[dep.name] || 0) + points_water;
+              console.log(updatedScorePerCategories)
           }
+
+          
+          updatedScorePerCategories = sortValues(updatedScorePerCategories);
+          console.log(updatedScorePerCategories)
+          
           setScorePerCategories(updatedScorePerCategories);
           for (let day of sevenDaysBeforeTemp) {
             updatedSecondWeekPoints.air[day] =
@@ -509,6 +551,7 @@ function App() {
         ) / Object.values(updatedSecondWeekPoints.air).length
       );
 
+      //if(updatedFirstWeekPoints === ){}
       setDataRing([
         ["catgories", "points"],
         [
@@ -546,9 +589,9 @@ function App() {
             0
           ) / Object.values(updatedFirstWeekPoints.water).length,
         ],
+        ["nan",0.000000000000000001,],
+
       ]);
-
-
         
     };
 
@@ -580,7 +623,7 @@ function App() {
     let keys = Object.keys(dataSensor);
 
     setDataSensorChart([
-      ["---", "Semana passada", "Esta Semana"],
+      ["---", "Semana Atual", "Semana Anterior"],
       [
         keys[0],
         (dataSensor[keys[0]]?.["Enters"] || 0) +
@@ -635,7 +678,7 @@ function App() {
 
   function LineChartUdate() {
     setDataLine([
-      ["---", "Semana passada", "Esta Semana"],
+      ["---", "Semana Atual", "Semana Anterior"],
       [
         sevenDaysTemp[0] + "\nvs\n" + sevenDaysBeforeTemp[0],
         firstWeekPoints[area][sevenDaysTemp[0]],
@@ -676,14 +719,14 @@ function App() {
 
   function verificarMessage(n) {
     if (n > 0) {
-      setMsg1("Conseguimos melhorar!");
-      setMsg2("O nosso desempenho subiu em:");
+      setMsg1("Estamos no bom caminho!");
+      setMsg2("Mehorámos o nosso desempenho em:");
     } else if (n < 0) {
       setMsg1("Temos de melhorar!");
       setMsg2("Piorámos o nosso consumo em:");
     } else {
-      setMsg1("Está estável o nosso consumo.");
-      setMsg2("mantivemos o nosso cosnsumo");
+      setMsg1("Temos de melhorar. ");
+      setMsg2("mantivemos o nosso desempenho:");
     }
   }
 
@@ -797,10 +840,14 @@ function App() {
 
         break;
     }
+
   }, [loadArea]);
 
-  if (!categoryPoints || dataLine.length <= 0 || optionsLine.length <= 0) {
+
+
+  if ( dataLine.length <= 0 || optionsLine.length <= 0) {
     return null;
+     /*!categoryPoints ||*/
   }
 
   return (
@@ -829,8 +876,7 @@ function App() {
             <>
               <div className="graphics_left">
                 <span className="legend">
-                  Pontos de sustentabilidade semanalmente por categorias da
-                  organização {orgName}
+                Distribuição de contributos sustentáveis nos últimos sete dias
                 </span>
                 <Chart
                   chartType="PieChart"
@@ -846,17 +892,17 @@ function App() {
                       className="pointsText"
                       style={{ color: rankingColors[area][0] }}
                     >
-
-                      {Math.round((ringPointsPerCategory(dataRing, area)*100)/totalRingPoints(dataRing))}{"%"}
+          
+                      {isNaN(Math.round((ringPointsPerCategory(dataRing, area)*100)/totalRingPoints(dataRing))) ? "00" : String(Math.round((ringPointsPerCategory(dataRing, area)*100)/totalRingPoints(dataRing))).padStart(2, '0')}{"%"}
                     </span>
-                    {"   "} pontos totais
+                    {"   "} pontos
                   </div>
                 </span>
               </div>
               <div className="graphics_left2">
                 <div className="graphics_left2_1">
                   <span className="legend">
-                    Na categoria de {category} obteve-se uma média de:
+                    Na categoria de {category} obteve-se uma média semanal de:
                     <div className="pointsLegend">
                       <span
                         className="pointsText"
@@ -870,7 +916,7 @@ function App() {
                 </div>
                 <div className="graphics_left2_2">
                   <span className="legend">
-                    Ranking de departamento de {orgName} na categoria {category}
+                  Ranking de Departamentos na categoria {category}
                   </span>
                   <br />
                   <div
@@ -929,13 +975,12 @@ function App() {
               <span className="legend2">
                 <span>
                   {" "}
-                  Comparação de pontos de sustentabilidade na categoria de{" "}
+                  Pontos de sustentabilidade na categoria {" "}
                   {category}
                 </span>
                 <br />
-                <span>durante a semana atual e a semana anterior </span>
+               {/* <span>durante a semana atual e a semana anterior </span> */}
               </span>
-
               <Chart
                 chartType="LineChart"
                 width={"100%"}
@@ -949,6 +994,7 @@ function App() {
               <span className="legend2">
                 <span>
                   {" "}
+
                   Utilização do elevador ao longo da semana {category}
                 </span>
                 <br />
@@ -988,21 +1034,32 @@ function App() {
               ) : (
                 <FaEquals style={{ fontSize: "6vh" }} color={CONST.pureWhite} />
               )}{" "}
-              {Math.abs(
+
+              {isNaN(Math.round(Math.abs(
                 Math.round(
                   ((categoryPoints - categoryPointsBefore) * 100) /
                     categoryPointsBefore
                 )
-              )}
+              ))) ? "00" : String(Math.round(Math.abs(
+                Math.round(
+                  ((categoryPoints - categoryPointsBefore) * 100) /
+                    categoryPointsBefore
+                )
+              ))).padStart(2, '0')}
+            
+              
               <span className="mainSymbol">
                 {" "}
                 <a style={{ fontSize: "7vh" }}>%</a>
               </span>
             </span>
           </div>
+          
           <div className="thirdSectionRight">
-            <span className="subText">Climatização</span>
+            <span className="subText">CLIMATIZAÇÃO</span>
           </div>
+          
+
           <FaWind
             className="iconRight"
             size={"90vh"}
@@ -1010,8 +1067,10 @@ function App() {
             style={{ opacity: 0.25 }}
           />
         </div>
+        
       ) : area === "energy" ? (
         <div className="rightSection" style={{ backgroundColor: CONST.yellow }}>
+          
           <div className="firstSectionRight">
             <span className="headingText">{msg1}</span>
             <br />
@@ -1032,12 +1091,19 @@ function App() {
               ) : (
                 <FaEquals style={{ fontSize: "6vh" }} color={CONST.pureWhite} />
               )}{" "}
-              {Math.abs(
+                 
+
+              {isNaN(Math.round(Math.abs(
                 Math.round(
                   ((categoryPoints - categoryPointsBefore) * 100) /
                     categoryPointsBefore
                 )
-              )}
+              ))) ? "00" : String(Math.round(Math.abs(
+                Math.round(
+                  ((categoryPoints - categoryPointsBefore) * 100) /
+                    categoryPointsBefore
+                )
+              ))).padStart(2, '0')}
               <span className="mainSymbol">
                 {" "}
                 <a style={{ fontSize: "7vh" }}>%</a>
@@ -1045,7 +1111,7 @@ function App() {
             </span>
           </div>
           <div className="thirdSectionRight">
-            <span className="subText">Energia Elétrica</span>
+            <span className="subText">ENERGIA ELÉTRICA</span>
           </div>
           <FaBolt
             className="iconRight"
@@ -1063,6 +1129,8 @@ function App() {
           </div>
           <div className="secondSectionRight">
             <span className="mainText">
+            
+
               {Math.round(categoryPoints - categoryPointsBefore) > 0 ? (
                 <FaArrowUp
                   style={{ fontSize: "6vh" }}
@@ -1076,12 +1144,18 @@ function App() {
               ) : (
                 <FaEquals style={{ fontSize: "6vh" }} color={CONST.pureWhite} />
               )}{" "}
-              {Math.abs(
+
+              {isNaN(Math.abs(
                 Math.round(
                   ((categoryPoints - categoryPointsBefore) * 100) /
                     categoryPointsBefore
                 )
-              )}
+              )) ? "00" : String(Math.round(Math.abs(
+                Math.round(
+                  ((categoryPoints - categoryPointsBefore) * 100) /
+                    categoryPointsBefore
+                )
+              ))).padStart(2, '0')}
               <span className="mainSymbol">
                 {" "}
                 <a style={{ fontSize: "7vh" }}>%</a>
@@ -1089,7 +1163,7 @@ function App() {
             </span>
           </div>
           <div className="thirdSectionRight">
-            <span className="subText">Mobilidade</span>
+            <span className="subText">MOBILIDADE</span>
           </div>
           <FaWalking
             className="iconRight"
@@ -1120,12 +1194,17 @@ function App() {
               ) : (
                 <FaEquals style={{ fontSize: "6vh" }} color={CONST.pureWhite} />
               )}
-              {Math.abs(
+              {isNaN(Math.round(Math.abs(
                 Math.round(
                   ((categoryPoints - categoryPointsBefore) * 100) /
                     categoryPointsBefore
                 )
-              )}
+              ))) ? "00" : String(Math.round(Math.abs(
+                Math.round(
+                  ((categoryPoints - categoryPointsBefore) * 100) /
+                    categoryPointsBefore
+                )
+              ))).padStart(2, '0')}
               <span className="mainSymbol">
                 {" "}
                 <a style={{ fontSize: "7vh" }}>%</a>
@@ -1133,7 +1212,7 @@ function App() {
             </span>
           </div>
           <div className="thirdSectionRight">
-            <span className="subText">Reciclagem</span>
+            <span className="subText">RECICLAGEM</span>
           </div>
           <FaRecycle
             className="iconRight"
@@ -1165,12 +1244,7 @@ function App() {
               ) : (
                 <FaEquals style={{ fontSize: "6vh" }} color={CONST.pureWhite} />
               )}{" "}
-              {Math.abs(
-                Math.round(
-                  ((categoryPoints - categoryPointsBefore) * 100) /
-                    categoryPointsBefore
-                )
-              )}
+              {isNaN(Math.round((ringPointsPerCategory(dataRing, area)*100)/totalRingPoints(dataRing))) ? "00" : String(Math.round((ringPointsPerCategory(dataRing, area)*100)/totalRingPoints(dataRing))).padStart(2, '0')}
               <span className="mainSymbol">
                 {" "}
                 <a style={{ fontSize: "7vh" }}>%</a>
@@ -1178,7 +1252,7 @@ function App() {
             </span>
           </div>
           <div className="thirdSectionRight">
-            <span className="subText">Recursos Hídricos</span>
+            <span className="subText">RECURSOS HÍDRICOS</span>
           </div>
           <FaFaucet
             className="iconRight"
@@ -1193,3 +1267,4 @@ function App() {
 }
 
 export default App;
+
